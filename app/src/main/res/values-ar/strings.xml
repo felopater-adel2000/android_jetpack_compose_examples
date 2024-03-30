@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">jetpack_compose_examples</string>
+    <string name="my_name">اسمي %s</string>
+    <string name="chnage_language">تغير اللغه</string>
+</resources>

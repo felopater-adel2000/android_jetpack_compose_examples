@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">jetpack_compose_examples</string>
+    <string name="my_name">My Name %s</string>
+    <string name="chnage_language">Change Language</string>
 </resources>
