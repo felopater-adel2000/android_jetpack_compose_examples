@@ -10,12 +10,15 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.viewinterop.AndroidView
 import com.restart.jetpack_compose_examples.ui.theme.Jetpack_compose_examplesTheme
 import kotlinx.coroutines.flow.asStateFlow
 
 class MainActivity : ComponentActivity() {
 
     private val viewModel: MainViewModels by viewModels()
+
+    private val compositionViewModel: CompositionViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -27,11 +30,13 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    UnderstandRecomposition(
+                    /*UnderstandRecomposition(
                         state = state,
-                        onValueChange = { viewModel.updateSlider(it.toInt()) },
+                        onValueChange = viewModel::updateSlider,
                         onButtonClick = viewModel::updateCounter
-                    )
+                    )*/
+
+                    PlayWithRecomposition(compositionViewModel)
                 }
             }
         }

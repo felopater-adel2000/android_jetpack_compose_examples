@@ -12,8 +12,8 @@ class MainViewModels : ViewModel()
         state.value = state.value.copy(counter = state.value.counter.plus(1))
     }
 
-    fun updateSlider(value: Int)
+    fun updateSlider(value: Float)
     {
-        state.value = state.value.copy(sliderValue = value)
+        state.value = state.value.copy(sliderValue = value.toInt())
     }
 }
