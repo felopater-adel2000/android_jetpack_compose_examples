@@ -6,11 +6,21 @@ import android.view.WindowInsets.Side
 import android.widget.RemoteViews.RemoteView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.TweenSpec
+import androidx.compose.animation.core.animateIntAsState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -27,8 +37,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -51,119 +65,82 @@ class MainActivity : ComponentActivity() {
         }
         super.onCreate(savedInstanceState)
         setContent {
-            Jetpack_compose_examplesTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    TimerScreen()
-                }
-            }
-        }
-    }
-}
 
-const val TAG = "GlobalTag"
-
-
-@Composable
-fun Counter() {
-    // Define a state variable for the count
-    val count = remember { mutableStateOf(0) }
-
-    // Use SideEffect to log the current value of count
-    SideEffect {
-        // Called on every recomposition
-        Log.d(TAG, "Counter: Trigger SideEffect ${count.value}")
-    }
-
-    Column {
-        Button(onClick = { count.value++ }) {
-            // This recomposition doesn't trigger the outer side effect
-            // every time button has been tapped
-            Text("Increase Count ${count.value}")
-        }
-    }
-}
-
-@Composable
-fun TestSideEffect()
-{
-    var count by remember { mutableStateOf(0) }
-
-    val some by remember { mutableStateOf(0) }
-    // this side effect not recomposed until the TestSideEffect recomposed
-
-
-    key(some){
-        SideEffect {
-            Log.d(TAG, "TestSideEffect: Trigger SideEffect")
-        }
-    }
-
-    Column(
-    ){
-
-        Button(onClick = { count++ }) {
-            Text(text = "count: ${count}")
-        }
-
-        Text(text = "Count: $count")
-
-    }
-
-}
-
-@Composable
-fun MyCounter()
-{
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ){
-        var count by remember { mutableStateOf(0) }
-
-        Button(onClick = { count++ }) {
-            Text(text = "Click me")
-        }
-
-        Text(text = "Count: $count")
-
-    }
-}
-
-
-suspend fun doSomething()
-{
-    delay(1000)
-    Log.d(TAG, "doSomething: Call")
-}
-
-@Preview(showSystemUi = true, device = "spec:width=1280dp,height=800dp,dpi=480")
-@Composable
-fun TimerScreen() {
-    val elapsedTime = remember { mutableStateOf(0) }
-
-    DisposableEffect(Unit) {
-        val scope = CoroutineScope(Dispatchers.Default)
-        val job = scope.launch {
-            while (true) {
-                delay(1000)
-                elapsedTime.value += 1
-                Log.d(TAG, "TimerScreen: \"Timer is still working ${elapsedTime.value}\"")
+            // A surface container using the 'background' color from the theme
+            Surface(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White),
+            ) {
+                TestAnimation()
             }
         }
 
-        onDispose {
-            //job.cancel()
-        }
     }
+}
 
-    Text(
-        text = "Elapsed Time: ${elapsedTime.value}",
-        modifier = Modifier.padding(16.dp),
-        fontSize = 24.sp
+
+
+@Composable
+fun TestScreen() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+    ) {
+
+        Box(
+            modifier = Modifier
+                .size(300.dp)
+                .background(Color.Black)
+                .align(Alignment.Center)
+        ){
+            Box(
+                modifier = Modifier
+                    .size(100.dp)
+                    .background(Color.Red)
+                    .align(Alignment.Center)
+            ){
+                Icon(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .size(20.dp)
+                        .background(Color.Blue),
+                    imageVector = Icons.Default.AccountBox,
+                    contentDescription = null
+                )
+            }
+        }
+
+
+    }
+}
+
+
+
+@Preview
+@Composable()
+fun TestAnimation()
+{
+    var bool by remember {
+        mutableStateOf(false)
+    }
+    val value = animateIntAsState(
+        targetValue = if(bool) 100 else 0,
+        label = "",
+        animationSpec = TweenSpec(durationMillis = 5000)
     )
+
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ){
+        Text(
+            modifier = Modifier.align(Alignment.Center)
+                .clickable { bool = !bool },
+            text = "Text ${value.value}"
+        )
+
+
+    }
 }
+
