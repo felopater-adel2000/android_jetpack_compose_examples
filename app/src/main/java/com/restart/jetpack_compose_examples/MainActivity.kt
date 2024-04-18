@@ -57,113 +57,11 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    TimerScreen()
+
                 }
             }
         }
     }
 }
 
-const val TAG = "GlobalTag"
 
-
-@Composable
-fun Counter() {
-    // Define a state variable for the count
-    val count = remember { mutableStateOf(0) }
-
-    // Use SideEffect to log the current value of count
-    SideEffect {
-        // Called on every recomposition
-        Log.d(TAG, "Counter: Trigger SideEffect ${count.value}")
-    }
-
-    Column {
-        Button(onClick = { count.value++ }) {
-            // This recomposition doesn't trigger the outer side effect
-            // every time button has been tapped
-            Text("Increase Count ${count.value}")
-        }
-    }
-}
-
-@Composable
-fun TestSideEffect()
-{
-    var count by remember { mutableStateOf(0) }
-
-    val some by remember { mutableStateOf(0) }
-    // this side effect not recomposed until the TestSideEffect recomposed
-
-
-    key(some){
-        SideEffect {
-            Log.d(TAG, "TestSideEffect: Trigger SideEffect")
-        }
-    }
-
-    Column(
-    ){
-
-        Button(onClick = { count++ }) {
-            Text(text = "count: ${count}")
-        }
-
-        Text(text = "Count: $count")
-
-    }
-
-}
-
-@Composable
-fun MyCounter()
-{
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ){
-        var count by remember { mutableStateOf(0) }
-
-        Button(onClick = { count++ }) {
-            Text(text = "Click me")
-        }
-
-        Text(text = "Count: $count")
-
-    }
-}
-
-
-suspend fun doSomething()
-{
-    delay(1000)
-    Log.d(TAG, "doSomething: Call")
-}
-
-@Preview(showSystemUi = true, device = "spec:width=1280dp,height=800dp,dpi=480")
-@Composable
-fun TimerScreen() {
-    val elapsedTime = remember { mutableStateOf(0) }
-
-    DisposableEffect(Unit) {
-        val scope = CoroutineScope(Dispatchers.Default)
-        val job = scope.launch {
-            while (true) {
-                delay(1000)
-                elapsedTime.value += 1
-                Log.d(TAG, "TimerScreen: \"Timer is still working ${elapsedTime.value}\"")
-            }
-        }
-
-        onDispose {
-            //job.cancel()
-        }
-    }
-
-    Text(
-        text = "Elapsed Time: ${elapsedTime.value}",
-        modifier = Modifier.padding(16.dp),
-        fontSize = 24.sp
-    )
-}
