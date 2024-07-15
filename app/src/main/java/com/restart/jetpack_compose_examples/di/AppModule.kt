@@ -12,6 +12,9 @@ import com.restart.jetpack_compose_examples.Main.SecoundComposable
 import com.restart.jetpack_compose_examples.profile.ProfileActivity
 import com.restart.jetpack_compose_examples.profile.ProfileComposable
 import com.restart.jetpack_compose_examples.profile.ProfileViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import org.koin.core.annotation.KoinReflectAPI
 import org.koin.dsl.module
 
@@ -22,7 +25,8 @@ val appModule = module {
 
     scope<MainActivity> {
         scoped { MainViewModel(get()) }
-        scoped { FirstComposable(get()) }
+        scoped { CoroutineScope(Dispatchers.Default + Job()).apply {  } }
+        scoped { FirstComposable(get(), get()) }
         scoped { SecoundComposable(get()) }
     }
 

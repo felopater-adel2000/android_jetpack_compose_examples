@@ -3,10 +3,12 @@ package com.restart.jetpack_compose_examples.Main
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -21,6 +23,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.restart.jetpack_compose_examples.BaseActivity
+import com.restart.jetpack_compose_examples.DataUtils
 import org.koin.androidx.scope.scope
 
 @Composable
@@ -47,10 +50,22 @@ fun ComposableFirst(navController: NavHostController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Button(onClick = {
-            navController.navigate("SecoundScreen")
-        }) {
-            Text(text = "Navigate to Second Screen")
+        LazyColumn {
+            items(DataUtils.items.size) {
+                Row {
+                    Text(text = DataUtils.items[it].text)
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Button(onClick = {
+                        DataUtils.items[it].text = "Changeed"
+                    }) {
+                        Text(text = "Go to Secound Screen")
+                    }
+                }
+            }
         }
     }
 }
+
+
