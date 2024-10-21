@@ -3,9 +3,6 @@ pluginManagement {
         google()
         mavenCentral()
         gradlePluginPortal()
-        maven {
-            url = uri("https://maven.pkg.jetbrains.space/public/p/ktor/eap")
-        }
     }
 }
 dependencyResolutionManagement {
@@ -13,9 +10,6 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven {
-            url = uri("https://maven.pkg.jetbrains.space/public/p/ktor/eap")
-        }
     }
 }
 
