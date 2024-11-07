@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -41,11 +42,23 @@ android {
         viewBinding = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.10"
     }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
+}
+
+kotlin {
+    sourceSets {
+        debug {
+            kotlin.srcDirs("build/generated/ksp/debug/kotlin")
+        }
+
+        release {
+            kotlin.srcDirs("build/generated/ksp/release/kotlin")
         }
     }
 }
@@ -67,4 +80,17 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+
+    // Navigation
+    val nav_version = "2.8.3"
+    implementation("androidx.navigation:navigation-compose:$nav_version")
+
+    // Compose Destination
+    val composeDestination = "2.1.0-beta14"
+    implementation("io.github.raamcosta.compose-destinations:core:$composeDestination")
+    ksp("io.github.raamcosta.compose-destinations:ksp:$composeDestination")
+    // V2 only: for bottom sheet destination support, also add
+    implementation("io.github.raamcosta.compose-destinations:bottom-sheet:2.1.0-beta14")
+
 }
