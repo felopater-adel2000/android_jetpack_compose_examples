@@ -63,7 +63,7 @@ fun Jetpack_compose_examplesTheme(
     }
 
     MaterialTheme(
-        colorScheme = colorScheme,
+        colorScheme = LightColorScheme,
         typography = Typography,
         content = content
     )
