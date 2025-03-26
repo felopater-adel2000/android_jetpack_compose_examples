@@ -1,5 +1,6 @@
 package com.restart.jetpack_compose_examples
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -20,9 +21,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import com.restart.jetpack_compose_examples.databinding.ActivityMainBinding
 import com.restart.jetpack_compose_examples.ui.theme.Jetpack_compose_examplesTheme
 import java.io.File
+import kotlin.io.path.Path
 
 
 class MainActivity : ComponentActivity() {
@@ -76,6 +79,34 @@ class MainActivity : ComponentActivity() {
 
     }
 
+    private fun isExternalStorageWritable(): Boolean {
+        return Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED
+    }
+
+    private fun isExternalStorageReadable(): Boolean {
+        return Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED_READ_ONLY
+    }
+
+    private fun getAllMediaStorage() {
+        val allStorage = ContextCompat.getExternalFilesDirs(this@MainActivity, null)
+
+        Log.d(TAG, "Content: Directories Files = ${allStorage.size}")
+        for ((index, storage) in allStorage.withIndex())
+        {
+            if(storage != null)
+                Log.d(TAG, "Content: ${storage.absolutePath}")
+            else Log.d(TAG, "Content: File at Index $index is Null")
+        }
+
+        allStorage.getOrNull(1)?.let {
+            val newFile = File(it, "Felopater_Adel_CV.txt")
+            if(!newFile.exists()) {
+                newFile.createNewFile()
+            }
+            Log.d(TAG, "Content: newFile Path = ${newFile.path}")
+        }
+    }
+
     @Preview(showBackground = true)
     @Composable
     fun Content() {
@@ -88,7 +119,9 @@ class MainActivity : ComponentActivity() {
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    modifier = Modifier.clickable { requestPermissionForAllFilesAccessAndCreatFileInRootAPI33() },
+                    modifier = Modifier.clickable {
+
+                    },
                     text = "Hello, World!",
                     fontSize = 30.sp
                 )
