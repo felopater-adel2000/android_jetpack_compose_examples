@@ -8,6 +8,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
@@ -35,20 +36,29 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.restart.jetpack_compose_examples.databinding.ActivityMainBinding
 import com.restart.jetpack_compose_examples.ui.theme.Jetpack_compose_examplesTheme
+import com.restart.jetpack_compose_examples.ui.theme.MyEnum
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.serialization.InternalSerializationApi
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonDecoder
 import java.util.UUID
 import kotlin.math.log
 
 class MainActivity : ComponentActivity() {
-    private lateinit var binding: ActivityMainBinding
-    override fun onCreate(savedInstanceState: Bundle?) {
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        binding.composeView.setContent {
 
-        }
+    @OptIn(InternalSerializationApi::class)
+    var person by mutableStateOf(Person("Felopater Adel"))
+
+    var stateInt = 0
+
+    @OptIn(InternalSerializationApi::class)
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             Jetpack_compose_examplesTheme {
@@ -58,9 +68,64 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
 
+                    Row(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        stateInt++
+                        Text(
+                            text = person.name,
+                        )
+
+                        Text(
+                            text = stateInt.toString(),
+                        )
+
+                        Button(
+                            onClick = {
+                                val personJson = Json.encodeToString(this@MainActivity.person)
+
+                                val newPerson = Json.decodeFromString<Person>(personJson)
+                                this@MainActivity.person = newPerson.copy(name = "New Name")
+                            }
+                        ) { Text("Click Me") }
+
+                    }
+
                 }
             }
         }
+
+        encodingAndDecoding()
+//        encodingAndDecodingEnumClass()
+//        basicTypeSerializer()
+    }
+
+
+    @OptIn(InternalSerializationApi::class)
+    fun encodingAndDecoding() {
+        val person = Person("Felopater Adel")
+
+        val json = Json.encodeToString(person)
+
+        Log.d("TAG", "onCreate: $json")
+
+        val newPerson = Json.decodeFromString<Person>(json)
+        Log.d("TAG", "onCreate: $newPerson")
+    }
+
+    fun encodingAndDecodingEnumClass() {
+        val myEnum = MyEnum.ONE
+
+        val jsonEnum = Json.encodeToString(myEnum)
+
+        Log.d("TAG", "onCreate: $jsonEnum")
+    }
+
+    fun basicTypeSerializer() {
+        val intSerializer: KSerializer<Int> = Int.serializer()
+        Log.d("TAG", "onCreate: ${intSerializer.descriptor}")
     }
 }
 
