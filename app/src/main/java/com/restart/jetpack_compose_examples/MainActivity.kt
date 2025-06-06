@@ -33,22 +33,33 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
+import androidx.lifecycle.lifecycleScope
 import com.restart.jetpack_compose_examples.databinding.ActivityMainBinding
 import com.restart.jetpack_compose_examples.ui.theme.Jetpack_compose_examplesTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.compose
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.launch
 import java.util.UUID
 import kotlin.math.log
 
 class MainActivity : ComponentActivity() {
-    private lateinit var binding: ActivityMainBinding
-    override fun onCreate(savedInstanceState: Bundle?) {
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        binding.composeView.setContent {
 
-        }
+    val userPerfrences = "userPerfrences"
+
+    private var text by mutableStateOf("Hello")
+
+    private val dataStore by preferencesDataStore(userPerfrences)
+    val stringKey = stringPreferencesKey("stringKey")
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContent {
             Jetpack_compose_examplesTheme {
@@ -58,10 +69,40 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
 
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        
+
+                        Text(text = text)
+
+                        Button(
+                            onClick = {
+                                lifecycleScope.launch { updateText() }
+                            }
+                        ) {
+                            Text(text = "Click Me")
+                        }
+
+                    }
+
                 }
             }
         }
     }
+
+    private suspend fun updateText() {
+        dataStore.edit { pref ->
+            pref[stringKey] = UUID.randomUUID().toString()
+            pref
+        }
+
+        //dataStore.updateData { pref -> pref.toMutablePreferences().a }
+        text = dataStore.data.last()[stringKey] ?: "Hello"
+    }
+
 }
 
 
