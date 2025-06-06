@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.serialization")
     id("org.jetbrains.kotlin.plugin.compose")
+    id("io.github.rastiehaiev.ir-dump") version "0.0.1"
 }
 
 android {
@@ -72,4 +73,6 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.6.3")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+
+    //implementation("io.github.rastiehaiev:ir-dump-annotations:0.0.1")
 }
