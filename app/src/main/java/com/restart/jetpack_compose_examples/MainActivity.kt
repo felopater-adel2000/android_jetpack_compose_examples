@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.util.Log
 import android.view.WindowInsets.Side
 import android.widget.RemoteViews.RemoteView
+import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.Keep
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -61,7 +63,6 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+        testProguard()
     }
 }
-
-

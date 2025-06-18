@@ -19,3 +19,22 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Remove testProguard function
+
+# Add *one* of the following rules to your Proguard configuration file.
+# Alternatively, you can annotate classes and class members with @androidx.annotation.Keep
+
+# keep the class and specified members from being removed or renamed
+-keep class com.restart.jetpack_compose_examples.TestProguardKt { *; }
+
+# keep the specified class members from being removed or renamed
+# only if the class is preserved
+-keepclassmembers class com.restart.jetpack_compose_examples.TestProguardKt { *; }
+
+# keep the class and specified members from being renamed only
+-keepnames class com.restart.jetpack_compose_examples.TestProguardKt { *; }
+
+# keep the specified class members from being renamed only
+-keepclassmembernames class com.restart.jetpack_compose_examples.TestProguardKt { *; }
+
