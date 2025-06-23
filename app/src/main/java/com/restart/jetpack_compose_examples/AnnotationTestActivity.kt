@@ -20,17 +20,19 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.core.content.edit
 import com.restart.jetpack_compose_examples.ui.theme.Jetpack_compose_examplesTheme
 
 class AnnotationTestActivity : ComponentActivity() {
-    
+
 
     @OptIn(InternalComposeApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
-        
+
         super.onCreate(savedInstanceState)
         val userSettings = UserSettings()
         val profile = Profile(name = "John Doe", age = 30)
+        val session = getSharedPreferences("pref", MODE_PRIVATE)
         setContent {
             Jetpack_compose_examplesTheme {
                 // A surface container using the 'background' color from the theme
@@ -38,9 +40,24 @@ class AnnotationTestActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Column {
-                        UserProfile(profile = profile)
-                        SettingsScreen(userSettings = userSettings)
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+
+                        Text(
+                            text = session.getInt("123", 0).toString()
+                        )
+
+                        Button(
+                            onClick = {
+                                session.edit { putInt("123", 654) }
+                            }
+                        ) {
+                            Text(text = "Click Me")
+                        }
+
                     }
                 }
             }
@@ -49,8 +66,7 @@ class AnnotationTestActivity : ComponentActivity() {
         ReadOnlyComposable()
     }
 
-    
-    
+
     @InternalComposeApi
     @Composable
     fun HelloWorld(name: MutableState<String>) {
@@ -109,7 +125,7 @@ class AnnotationTestActivity : ComponentActivity() {
         LazyColumn(
 
         ) {
-            item {  }
+            item { }
         }
     }
 }
