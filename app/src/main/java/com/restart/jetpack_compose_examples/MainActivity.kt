@@ -2,45 +2,25 @@ package com.restart.jetpack_compose_examples
 
 import android.os.Bundle
 import android.util.Log
-import android.view.WindowInsets.Side
-import android.widget.RemoteViews.RemoteView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.InternalComposeApi
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.currentComposer
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.key.Key
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.lifecycleScope
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.restart.jetpack_compose_examples.databinding.ActivityMainBinding
 import com.restart.jetpack_compose_examples.ui.theme.Jetpack_compose_examplesTheme
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
+import com.restart.jetpack_compose_examples.ui.theme.TAG
 import kotlinx.coroutines.launch
 import java.util.UUID
-import kotlin.math.log
 
 class MainActivity : ComponentActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -49,6 +29,7 @@ class MainActivity : ComponentActivity() {
         binding.composeView.setContent {
 
         }
+        val uuid = "123e4567-e89b-12d3-a456-426614174000"
         super.onCreate(savedInstanceState)
         setContent {
             Jetpack_compose_examplesTheme {
@@ -58,10 +39,64 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
 
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+
+                        Button(
+                            onClick = {
+                                val uuid = UUID.fromString(uuid)
+                                val worker = OneTimeWorkRequestBuilder<CoroutineWork>()
+                                    .addTag("CoroutineWork")
+                                    .setId(uuid)
+                                    .build()
+
+                                WorkManager.getInstance(this@MainActivity)
+                                    .enqueueUniqueWork(
+                                        uniqueWorkName = "MyWork",
+                                        existingWorkPolicy = androidx.work.ExistingWorkPolicy.REPLACE,
+                                        request = worker
+                                    )
+
+                                Log.d(TAG, "onCreate: uuid ${uuid.toString()}")
+                                Log.d(TAG, "onCreate: workerId ${worker.id.toString()}")
+
+                            }
+                        ) { Text("Start Worker") }
+
+                        Button(
+                            onClick = {
+
+                                WorkManager.getInstance(this@MainActivity)
+                                    .cancelWorkById(UUID.fromString(uuid))
+                            }
+                        ) { Text("Stop Worker") }
+
+                        Button(
+                            onClick = {
+                                lifecycleScope.launch {
+                                    WorkManager.getInstance(this@MainActivity)
+                                        .getWorkInfoByIdFlow(UUID.fromString(uuid))
+                                        .collect { info ->
+                                            info?.let { workInfo ->
+                                                val currentIndex =
+                                                    workInfo.progress.getInt("index", -1)
+                                                Log.d(
+                                                    TAG,
+                                                    "Worker State: ${workInfo.state}, Index: $currentIndex"
+                                                )
+                                            }
+                                        }
+                                }
+                            }
+                        ) { Text(" Worker State ") }
+
+                    }
+
                 }
             }
         }
     }
 }
-
-
