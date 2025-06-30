@@ -5,6 +5,8 @@ import android.util.Log
 import androidx.camera.compose.CameraXViewfinder
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -13,6 +15,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
@@ -60,9 +63,25 @@ private fun CameraPreviewContent(viewModel: CameraViewModel) {
 
     surfaceRequest?.let { request ->
         Log.d("FeloTAG", "CameraPreviewContent: SurfaceRequest is not null")
-        CameraXViewfinder(
-            modifier = Modifier.fillMaxSize(),
-            surfaceRequest = request,
-        )
+
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
+
+            CameraXViewfinder(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .padding(bottom = 16.dp),
+                surfaceRequest = request,
+            )
+
+            Button(
+                onClick = { viewModel.takePhoto(context) }
+            ) {
+                Text("Take Phote")
+            }
+
+        }
     }
 }
