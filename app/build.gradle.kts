@@ -41,6 +41,7 @@ android {
     buildFeatures {
         compose = true
         viewBinding = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.15"
@@ -72,4 +73,6 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.6.3")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+
+    implementation("io.github.qamarelsafadi:compose-tracker:1.0.0")
 }
