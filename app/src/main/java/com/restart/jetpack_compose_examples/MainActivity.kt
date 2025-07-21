@@ -28,7 +28,6 @@ import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import okio.IOException
 import java.io.File
-import java.util.concurrent.TimeUnit
 
 
 class MainActivity : ComponentActivity() {
@@ -74,23 +73,10 @@ class MainActivity : ComponentActivity() {
         )
         val okHttpClient = OkHttpClient.Builder()
             .cache(cache)
-            .addInterceptor(HttpLoggingInterceptor().apply {
-                level = HttpLoggingInterceptor.Level.HEADERS
-            })
-
-            .addNetworkInterceptor { chain ->
-                val response = chain.proceed(chain.request())
-
-                val cahceControl = CacheControl.Builder()
-                    .maxAge(10, TimeUnit.DAYS)
-                    .build()
-
-                return@addNetworkInterceptor response.newBuilder()
-                    .removeHeader("Pragma")
-                    .removeHeader("Cache-Control")
-                    .header("Cache-Control", cahceControl.toString())
-                    .build()
-            }
+            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+            /*.addInterceptor(HttpLoggingInterceptor().apply {
+                level = HttpLoggingInterceptor.Level.BODY
+            })*/
             .addInterceptor { chain ->
                 var request = chain.request()
 
@@ -98,14 +84,18 @@ class MainActivity : ComponentActivity() {
                     request = request.newBuilder()
                         .cacheControl(CacheControl.FORCE_CACHE)
                         .build()
-                }
+                } /*else if (FORECE_UPDATE) {
+                    request = request.newBuilder()
+                        .cacheControl(CacheControl.FORCE_NETWORK) // Cache-Control: no-cache
+                        .build()
+                }*/
 
                 chain.proceed(request)
             }
             .build()
 
         val request = Request.Builder()
-            .url("http://192.168.1.36:8080/employees")
+            .url("http://192.168.202.79:8080/employees")
             .build()
 
 
