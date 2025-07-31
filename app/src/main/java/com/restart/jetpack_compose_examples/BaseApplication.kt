@@ -14,12 +14,17 @@ class BaseApplication : Application() {
 
         startKoin {
             androidContext(this@BaseApplication)
-            modules(module {
-
-                viewModelOf(::ListViewModel)
-                viewModelOf(::DetailsViewModel)
-
-            })
+            modules(
+                viewModelModule
+            )
         }
     }
+}
+
+val viewModelModule = module {
+    println("Start Koin Module")
+
+    viewModelOf(::ListViewModel)
+    viewModelOf(::DetailsViewModel)
+
 }

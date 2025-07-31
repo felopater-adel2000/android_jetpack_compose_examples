@@ -49,7 +49,10 @@ android {
     }
     packaging {
         resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += setOf(
+                "META-INF/LICENSE.md",
+                "META-INF/LICENSE-notice.md"
+            )
         }
     }
 }
@@ -69,7 +72,7 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+
     androidTestImplementation(platform("androidx.compose:compose-bom:2023.08.00"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
@@ -93,4 +96,34 @@ dependencies {
     implementation("io.insert-koin:koin-android:4.1.0")
     implementation("io.insert-koin:koin-androidx-compose:4.1.0")
     implementation("io.insert-koin:koin-androidx-navigation:4.1.0")
+
+    // Mockk
+    val mockkVersion = "1.14.5"
+    testImplementation("io.mockk:mockk-android:${mockkVersion}")
+    testImplementation("io.mockk:mockk-agent:${mockkVersion}")
+    androidTestImplementation("io.mockk:mockk-android:${mockkVersion}")
+    androidTestImplementation("io.mockk:mockk-agent:${mockkVersion}")
+
+    // Espresso
+    androidTestImplementation("androidx.test:runner:1.5.2")
+    androidTestImplementation("androidx.test:rules:1.5.0")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
+    androidTestImplementation("androidx.test.espresso:espresso-contrib:3.7.0")
+    androidTestImplementation("androidx.test.espresso:espresso-intents:3.7.0")
+    androidTestImplementation("com.android.support.test.espresso:espresso-contrib:3.0.2")
+
+    androidTestImplementation("androidx.arch.core:core-testing:2.2.0")
+
+
+    val fragment_version = "1.8.8"
+    debugImplementation("androidx.fragment:fragment-testing-manifest:$fragment_version")
+    androidTestImplementation("androidx.fragment:fragment-testing:$fragment_version")
+
+    androidTestImplementation("io.insert-koin:koin-test:2.2.3")
+    testImplementation("io.insert-koin:koin-test:2.2.3")
+
+    // Test Naviagetion
+    androidTestImplementation("androidx.navigation:navigation-testing:2.9.3")
+
+    implementation("androidx.test:core:1.7.0")
 }

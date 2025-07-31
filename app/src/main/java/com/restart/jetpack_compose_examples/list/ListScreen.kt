@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -36,6 +37,7 @@ private fun ListContent(viewState: ListViewState, onAction: (ListAction) -> Unit
 
     LazyColumn(
         modifier = Modifier
+            .testTag("list")
             .fillMaxSize()
             .background(Color.White)
             .padding(8.dp)
