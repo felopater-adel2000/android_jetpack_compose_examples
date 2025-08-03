@@ -2,6 +2,8 @@ package com.restart.jetpack_compose_examples
 
 import android.app.Application
 import com.restart.jetpack_compose_examples.details.DetailsViewModel
+import com.restart.jetpack_compose_examples.list.IListRepository
+import com.restart.jetpack_compose_examples.list.ListRepository
 import com.restart.jetpack_compose_examples.list.ListViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -23,6 +25,8 @@ class BaseApplication : Application() {
 
 val viewModelModule = module {
     println("Start Koin Module")
+
+    single<IListRepository> { ListRepository() }
 
     viewModelOf(::ListViewModel)
     viewModelOf(::DetailsViewModel)

@@ -1,13 +1,15 @@
 package com.restart.jetpack_compose_examples.list
 
 import android.util.Log
+import androidx.lifecycle.viewModelScope
 import com.restart.jetpack_compose_examples.BaseViewModel
 import com.restart.jetpack_compose_examples.ProductModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
-class ListViewModel : BaseViewModel() {
+class ListViewModel(private val repo: IListRepository) : BaseViewModel() {
 
 
     private val _viewState = MutableStateFlow(ListViewState())
@@ -30,15 +32,19 @@ class ListViewModel : BaseViewModel() {
     }
 
     private fun getData() {
-        _viewState.update { state ->
-            state.copy(
-                products = List(100) { index ->
-                    ProductModel(
-                        id = index,
-                        name = "Product $index",
+        Log.d("TAGFelo", "getData: ")
+        viewModelScope.launch {
+            runCatching {
+                repo.getList()
+            }.onSuccess { list ->
+                _viewState.update { state ->
+                    state.copy(
+                        products = list,
                     )
-                },
-            )
+                }
+            }.onFailure {
+
+            }
         }
     }
 
