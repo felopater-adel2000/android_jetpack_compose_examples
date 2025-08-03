@@ -3,17 +3,23 @@ package com.restart.jetpack_compose_examples.list
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
+import androidx.compose.ui.test.onChildren
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performClick
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.restart.jetpack_compose_examples.R
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.koin.core.context.GlobalContext
+import org.koin.core.module.dsl.viewModel
+import org.koin.dsl.module
 
 @RunWith(AndroidJUnit4::class)
 class ListFragmentTest {
@@ -29,10 +35,13 @@ class ListFragmentTest {
 
     @Before
     fun init() {
-        /* startKoin {
-             androidContext(ApplicationProvider.getApplicationContext())
-             modules(viewModelModule)
-         }*/
+        GlobalContext.get().loadModules(
+            listOf(
+                module {
+                    viewModel<ListViewModel> { ListViewModel() }
+                }
+            )
+        )
     }
 
     private fun openListFragment() {
@@ -59,5 +68,19 @@ class ListFragmentTest {
 
         composeTestRule.onNodeWithTag("list").assertIsDisplayed()
         composeTestRule.onNodeWithTag("list").assertExists()
+
+        composeTestRule.onNodeWithTag("list").onChildren().fetchSemanticsNodes().size
+            .let { itemCount ->
+                Assert.assertTrue(itemCount == 0)
+            }
+
+        composeTestRule.onNodeWithTag("load_data_button").performClick()
+
+        composeTestRule.onNodeWithTag("list").onChildren().fetchSemanticsNodes().size
+            .let { itemCount ->
+                Assert.assertTrue(itemCount > 0)
+            }
+
+
     }
 }
