@@ -92,6 +92,13 @@ dependencies {
     implementation("io.insert-koin:koin-androidx-compose:4.1.0")
     implementation("io.insert-koin:koin-androidx-navigation:4.1.0")
 
+    // Retrofit
+    implementation("com.squareup.retrofit2:retrofit:3.0.0")
+    implementation("com.squareup.retrofit2:converter-gson:3.0.0")
+
+    // OKHttpLoggingInterceptor
+    implementation("com.squareup.okhttp3:logging-interceptor:5.1.0")
+
 
     /** Testing **/
 
