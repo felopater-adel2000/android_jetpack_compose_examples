@@ -1,7 +1,6 @@
 package com.restart.jetpack_compose_examples.list
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.compose.ui.test.onChildren
 import androidx.compose.ui.test.onNodeWithTag
@@ -15,7 +14,7 @@ import com.restart.jetpack_compose_examples.ProductModel
 import com.restart.jetpack_compose_examples.R
 import io.mockk.coEvery
 import io.mockk.mockk
-import org.junit.Assert
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -71,11 +70,17 @@ class ListFragmentTest : KoinTest {
             }
         }
 
-        composeTestRule.onNodeWithTag("list").onChildren().assertCountEquals(0)
+        composeTestRule.onNodeWithTag("list").onChildren()
+            .fetchSemanticsNodes().size?.let { itemCount ->
+            assertTrue(itemCount == 0) // Initially, the list should be empty
+        }
         composeTestRule.onNodeWithTag("load_data_button").performClick()
         composeTestRule.waitForIdle()
-        composeTestRule.onNodeWithTag("list").onChildren().assertCountEquals(10)
+        composeTestRule.onNodeWithTag("list").onChildren()
+            .fetchSemanticsNodes().size?.let { itemCount ->
+            assertTrue(itemCount == 10) // After clicking the button, the list should have 10 items
+        }
 
-        Assert.assertTrue(viewModel.viewState.value.products.size == 10)
+        assertTrue(viewModel.viewState.value.products.size == 10)
     }
 }
