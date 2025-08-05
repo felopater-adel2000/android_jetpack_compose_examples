@@ -17,8 +17,6 @@ import com.google.gson.GsonBuilder
 import com.restart.jetpack_compose_examples.ProductModel
 import com.restart.jetpack_compose_examples.R
 import kotlinx.coroutines.test.runTest
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
@@ -27,9 +25,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.koin.core.context.startKoin
-import org.koin.core.context.stopKoin
-import org.koin.core.module.dsl.viewModelOf
+import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
 import org.koin.test.KoinTest
 import retrofit2.Retrofit
@@ -52,7 +48,7 @@ class ListFragmentIntegrationTest : KoinTest {
     @Before
     fun init() {
         mockWebServer.start(8080)
-        stopKoin()
+        /*stopKoin()
 
         startKoin {
             modules(module {
@@ -74,7 +70,18 @@ class ListFragmentIntegrationTest : KoinTest {
                 single<IListRepository> { ListRepository(get()) }
                 viewModelOf(::ListViewModel)
             })
-        }
+        }*/
+
+        loadKoinModules(module {
+            single<ListApiInterface> {
+                Retrofit.Builder()
+                    .baseUrl(mockWebServer.url("/"))  // Use MockWebServer URL
+                    .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
+                    .client(get())
+                    .build()
+                    .create(ListApiInterface::class.java)
+            }
+        })
     }
 
     @After
@@ -95,7 +102,9 @@ class ListFragmentIntegrationTest : KoinTest {
         }
 
         val mockProducts = listOf<ProductModel>(
-
+            ProductModel(1, "Product 1"),
+            ProductModel(1, "Product 2"),
+            ProductModel(1, "Product 3"),
         )
 
         val mockResponse = MockResponse()
@@ -117,12 +126,12 @@ class ListFragmentIntegrationTest : KoinTest {
             onNodeWithTag("load_data_button").performClick()
 
             /** Must Wait Until Ideal **/
-            waitUntil(10_000) { onNodeWithTag("list").fetchSemanticsNode().children.isEmpty() }
+            waitUntil(10_000) { onNodeWithTag("list").fetchSemanticsNode().children.isNotEmpty() }
 
-            onNodeWithTag("list").onChildren().assertCountEquals(0)
-            /*onNodeWithText("Product 1").assertExists()
+            onNodeWithTag("list").onChildren().assertCountEquals(3)
+            onNodeWithText("Product 1").assertExists()
             onNodeWithText("Product 2").assertExists()
-            onNodeWithText("Product 3").assertExists()*/
+            onNodeWithText("Product 3").assertExists()
         }
 
         // Verify API was called
