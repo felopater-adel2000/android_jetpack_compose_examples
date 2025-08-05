@@ -22,19 +22,15 @@ fun ListScreen(
     viewState: ListViewState,
     onAction: (ListAction) -> Unit
 ) {
-
     ListContent(
         viewState = viewState,
         onAction = onAction
     )
-
-
 }
 
 
 @Composable
 private fun ListContent(viewState: ListViewState, onAction: (ListAction) -> Unit) {
-
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -70,6 +66,5 @@ private fun ListContent(viewState: ListViewState, onAction: (ListAction) -> Unit
             }
 
         }
-
     }
 }

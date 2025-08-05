@@ -32,16 +32,18 @@ class BaseApplication : Application() {
 val viewModelModule = module {
     println("Start Koin Module")
 
-    single<ListApiInterface> {
-
-        val okHttp = OkHttpClient.Builder()
+    single<OkHttpClient> {
+        OkHttpClient.Builder()
             .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             .build()
+    }
+
+    single<ListApiInterface> {
 
         Retrofit.Builder()
             .baseUrl("https://fakestoreapi.com/")
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
-            .client(okHttp)
+            .client(get())
             .build()
             .create(ListApiInterface::class.java)
 

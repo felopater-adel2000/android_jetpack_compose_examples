@@ -135,4 +135,10 @@ dependencies {
     testImplementation("io.insert-koin:koin-test-junit4:4.1.0")
     androidTestImplementation("io.insert-koin:koin-test-junit4:4.1.0")
 
+    // Test OkHttp
+    testImplementation("com.squareup.okhttp3:mockwebserver:5.1.0")
+    androidTestImplementation("com.squareup.okhttp3:mockwebserver:5.1.0")
+    androidTestImplementation("com.squareup.okhttp3:okhttp-tls:5.1.0")
+    androidTestImplementation("com.jakewharton.espresso:okhttp3-idling-resource:1.0.0")
+    androidTestImplementation("androidx.test.espresso:espresso-idling-resource:3.7.0")
 }

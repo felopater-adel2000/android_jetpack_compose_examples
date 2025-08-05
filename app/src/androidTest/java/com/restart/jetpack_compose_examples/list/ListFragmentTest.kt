@@ -72,14 +72,14 @@ class ListFragmentTest : KoinTest {
 
         composeTestRule.onNodeWithTag("list").onChildren()
             .fetchSemanticsNodes().size?.let { itemCount ->
-            assertTrue(itemCount == 0) // Initially, the list should be empty
-        }
+                assertTrue(itemCount == 0) // Initially, the list should be empty
+            }
         composeTestRule.onNodeWithTag("load_data_button").performClick()
         composeTestRule.waitForIdle()
         composeTestRule.onNodeWithTag("list").onChildren()
             .fetchSemanticsNodes().size?.let { itemCount ->
-            assertTrue(itemCount == 10) // After clicking the button, the list should have 10 items
-        }
+                assertTrue(itemCount == 10) // After clicking the button, the list should have 10 items
+            }
 
         assertTrue(viewModel.viewState.value.products.size == 10)
     }
