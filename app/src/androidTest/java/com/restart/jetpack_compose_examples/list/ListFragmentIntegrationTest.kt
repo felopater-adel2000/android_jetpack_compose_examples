@@ -20,6 +20,7 @@ import kotlinx.coroutines.test.runTest
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
+import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -139,4 +140,49 @@ class ListFragmentIntegrationTest : KoinTest {
         assertEquals("GET", recordedRequest.method)
         assertEquals("/products", recordedRequest.path)
     }
+
+    @Test
+    fun testNavigation() {
+        launchFragmentInContainer<ListFragment> {
+            ListFragment().also { fragment ->
+                fragment.viewLifecycleOwnerLiveData.observeForever { viewLifecycleOwner ->
+                    navController.setGraph(R.navigation.nav_main)
+                    navController.setCurrentDestination(R.id.listFragment)
+                    Navigation.setViewNavController(fragment.requireView(), navController)
+                }
+            }
+        }
+
+        val mockProducts = listOf<ProductModel>(
+            ProductModel(1, "Product 1"),
+        )
+
+        val mockResponse = MockResponse()
+            .setResponseCode(200)
+            .setBody(Gson().toJson(mockProducts))
+            .setHeader("Content-Type", "application/json")
+
+        mockWebServer.enqueue(mockResponse)
+
+        uiRule.onNodeWithTag("load_data_button").assertExists()
+        uiRule.onNodeWithTag("list").assertExists()
+
+        uiRule.onNodeWithTag("load_data_button").performClick()
+
+        uiRule.waitUntil(10_000) {
+            uiRule.onNodeWithTag("list").fetchSemanticsNode().children.isNotEmpty()
+        }
+
+        uiRule.onNodeWithText("Product 1").assertExists()
+
+        uiRule.onNodeWithText("Product 1").performClick()
+
+        val currentDistintion = navController.currentBackStackEntry?.destination?.id
+        println("currentDistintion: $currentDistintion")
+        println("listFragmentId: ${R.id.listFragment}")
+        println("detailsFragment: ${R.id.detailsFragment}")
+        Assert.assertEquals(currentDistintion, R.id.detailsFragment)
+
+    }
+
 }
