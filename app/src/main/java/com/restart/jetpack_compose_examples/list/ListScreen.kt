@@ -49,7 +49,7 @@ private fun ListContent(token: String, viewState: ListViewState, onAction: (List
         Button(
             modifier = Modifier
                 .padding(10.dp)
-                .testTag("load_data_button"),
+                .testTag("set_token"),
             onClick = { onAction(ListAction.SetToken) },
         ) {
             Text(
@@ -58,7 +58,8 @@ private fun ListContent(token: String, viewState: ListViewState, onAction: (List
         }
 
         Text(
-            text = "Token: $token",
+            modifier = Modifier.testTag("token_test"),
+            text = token,
             color = Color.White
         )
 
