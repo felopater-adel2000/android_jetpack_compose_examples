@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.restart.jetpack_compose_examples.ScreenDirectionEventHandler
 import com.restart.jetpack_compose_examples.databinding.FragmentListBinding
+import com.restart.jetpack_compose_examples.datastore.SessionManager
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -31,7 +32,9 @@ class ListFragment : Fragment() {
         binding.root.apply {
             setContent {
                 val viewState by viewModel.viewState.collectAsState()
+                val sessionManager by viewModel.dataStore.data.collectAsState(SessionManager())
                 ListScreen(
+                    token = sessionManager.token,
                     viewState = viewState,
                     onAction = viewModel::onAction
                 )

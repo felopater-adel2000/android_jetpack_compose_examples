@@ -7,4 +7,6 @@ sealed interface ListAction {
     object LoadData : ListAction
 
     data class OnProductClick(val product: ProductModel) : ListAction
+
+    object SetToken : ListAction
 }

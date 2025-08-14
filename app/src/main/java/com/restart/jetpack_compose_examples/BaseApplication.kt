@@ -1,7 +1,12 @@
 package com.restart.jetpack_compose_examples
 
 import android.app.Application
+import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.core.DataStoreFactory
+import androidx.datastore.preferences.preferencesDataStoreFile
 import com.google.gson.GsonBuilder
+import com.restart.jetpack_compose_examples.datastore.SessionManager
 import com.restart.jetpack_compose_examples.details.DetailsViewModel
 import com.restart.jetpack_compose_examples.list.IListRepository
 import com.restart.jetpack_compose_examples.list.ListApiInterface
@@ -50,6 +55,15 @@ val viewModelModule = module {
     }
 
     single<IListRepository> { ListRepository(get()) }
+
+    single<DataStore<SessionManager>> {
+        DataStoreFactory.create(
+            serializer = SessionManager.SessionManagerSerialization,
+            produceFile = {
+                get<Context>().preferencesDataStoreFile("FeloDataStore")
+            }
+        )
+    }
 
     viewModelOf(::ListViewModel)
     viewModelOf(::DetailsViewModel)

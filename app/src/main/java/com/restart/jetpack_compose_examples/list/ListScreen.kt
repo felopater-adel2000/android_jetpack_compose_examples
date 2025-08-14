@@ -19,10 +19,12 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun ListScreen(
+    token: String,
     viewState: ListViewState,
     onAction: (ListAction) -> Unit
 ) {
     ListContent(
+        token = token,
         viewState = viewState,
         onAction = onAction
     )
@@ -30,7 +32,7 @@ fun ListScreen(
 
 
 @Composable
-private fun ListContent(viewState: ListViewState, onAction: (ListAction) -> Unit) {
+private fun ListContent(token: String, viewState: ListViewState, onAction: (ListAction) -> Unit) {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -43,6 +45,22 @@ private fun ListContent(viewState: ListViewState, onAction: (ListAction) -> Unit
                 text = "Load Data"
             )
         }
+
+        Button(
+            modifier = Modifier
+                .padding(10.dp)
+                .testTag("load_data_button"),
+            onClick = { onAction(ListAction.SetToken) },
+        ) {
+            Text(
+                text = "setToken"
+            )
+        }
+
+        Text(
+            text = "Token: $token",
+            color = Color.White
+        )
 
         LazyColumn(
             modifier = Modifier
