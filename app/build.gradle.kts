@@ -55,6 +55,9 @@ android {
             )
         }
     }
+    testOptions {
+        unitTests.isIncludeAndroidResources = true
+    }
 }
 
 dependencies {
@@ -72,6 +75,7 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    testImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation(platform("androidx.compose:compose-bom:2023.08.00"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
@@ -118,6 +122,7 @@ dependencies {
 
     // Compose UI Test
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    testImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
     // Mockk
@@ -147,4 +152,7 @@ dependencies {
     androidTestImplementation("com.squareup.okhttp3:okhttp-tls:5.1.0")
     androidTestImplementation("com.jakewharton.espresso:okhttp3-idling-resource:1.0.0")
     androidTestImplementation("androidx.test.espresso:espresso-idling-resource:3.7.0")
+
+    // Robolectric
+    testImplementation("org.robolectric:robolectric:4.15.1")
 }
