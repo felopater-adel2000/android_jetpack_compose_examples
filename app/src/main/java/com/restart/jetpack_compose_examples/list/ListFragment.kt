@@ -7,6 +7,9 @@ import android.view.ViewGroup
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import com.restart.jetpack_compose_examples.ScreenDirectionEventHandler
 import com.restart.jetpack_compose_examples.databinding.FragmentListBinding
@@ -14,9 +17,11 @@ import com.restart.jetpack_compose_examples.datastore.SessionManager
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class ListFragment : Fragment() {
+class ListFragment : BaseFragment() {
     private lateinit var binding: FragmentListBinding
     private val viewModel: ListViewModel by viewModel()
+
+    private val x = MutableLiveData<String>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,5 +50,18 @@ class ListFragment : Fragment() {
                 )
             }
         }
+
+        x.observeHere {
+
+        }
     }
+}
+
+
+abstract class BaseFragment : Fragment() {
+
+    fun <T> LiveData<T>.observeHere(observer: Observer<T>) {
+        observe(viewLifecycleOwner, observer)
+    }
+
 }
