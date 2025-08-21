@@ -17,6 +17,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -24,6 +25,7 @@ import org.robolectric.RobolectricTestRunner
  * See [testing documentation](http://d.android.com/tools/testing).
  */
 @RunWith(RobolectricTestRunner::class)
+@Config(application = TestApplication::class)
 class ExampleUnitTest {
 
     @Test
@@ -57,6 +59,7 @@ class ExampleUnitTest {
             counter.emit(9)
 
             onNodeWithText("counter: 9").assertExists()
+
         }
     }
 
