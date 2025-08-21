@@ -8,7 +8,7 @@ import org.junit.Test
 class CalculatorTest {
 
     @Test
-    fun testMockContruactor() {
+    fun testMockContractor() {
 
 
         mockkConstructor(Summation::class)
