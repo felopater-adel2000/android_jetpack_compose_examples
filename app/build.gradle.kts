@@ -73,6 +73,6 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.6.3")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
-    implementation("androidx.work:work-runtime-ktx:2.10.2")
-    implementation("androidx.concurrent:concurrent-futures-ktx:1.3.0-beta01")
+    implementation("androidx.work:work-runtime-ktx:2.10.3")
+    implementation("androidx.concurrent:concurrent-futures-ktx:1.3.0")
 }
