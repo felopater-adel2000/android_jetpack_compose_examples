@@ -36,6 +36,9 @@ jobs:
       - name: print NPM Version
         run: npm -v
 
+      - name: Install Style-Dictionary
+        run: npm install -g style-dictionary
+
       - name: Check Existing APK
         run: |
           APK_PATH="app/build/outputs/apk/debug/app-debug.apk"
