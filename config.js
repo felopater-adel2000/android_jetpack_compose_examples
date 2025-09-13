@@ -56,6 +56,7 @@ export default {
             filter: function (token) {
                 //token.original.value = token.original.value.replace("{", "{global/default.")
                 //console.log(typeof token.original.value)
+                console.log(token);
                 return token.key.startsWith('{semantic/marketplace');
             },
         },
