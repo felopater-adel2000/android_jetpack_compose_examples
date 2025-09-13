@@ -25,6 +25,17 @@ jobs:
       - name: Grand Permissions
         run: chmod +x gradlew
 
+      - name: Setup NodeJS
+        uses: actions/setup-node@v5
+        with:
+          node-version: '20'
+
+      - name: Print NodeJS Version
+        run: node -v
+
+      - name: print NPM Version
+        run: npm -v
+
       - name: Check Existing APK
         run: |
           APK_PATH="app/build/outputs/apk/debug/app-debug.apk"
