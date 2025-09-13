@@ -56,8 +56,8 @@ export default {
             filter: function (token) {
                 //token.original.value = token.original.value.replace("{", "{global/default.")
                 //console.log(typeof token.original.value)
-                console.log(token);
-                return token.key.startsWith('{semantic/marketplace');
+                //console.log(token);
+                return token.path[0] === "semantic/marketplace";
             },
         },
         {
@@ -72,7 +72,7 @@ export default {
 
             },
             filter: function (token) {
-                return token.key.startsWith('{semantic/instock');
+                return token.path[0] === "semantic/instock";
             },
         },
         {
@@ -86,7 +86,7 @@ export default {
                 packageName: "com.maxab.theme",
             },
             filter: function (token) {
-                return token.key.startsWith('{semantic/fintech');
+                return token.path[0] === "semantic/fintech";
             },
         },
         {
@@ -100,7 +100,7 @@ export default {
                 packageName: "com.maxab.theme",
             },
             filter: function (token) {
-                return token.key.startsWith('{semantic/supply');
+                return token.path[0] === "semantic/supply";
             },
         },
         {
@@ -114,7 +114,7 @@ export default {
                 packageName: "com.maxab.theme",
             },
             filter: function (token) {
-                return token.key.startsWith('{semantic/superapp');
+                return token.path[0] === "semantic/superapp";
             },
         },
 //        {
