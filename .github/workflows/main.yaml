@@ -22,8 +22,8 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Grand Permissions
-        run: chmod +x gradlew
+      #      - name: Grand Permissions
+      #        run: chmod +x gradlew
 
       - name: Setup NodeJS
         uses: actions/setup-node@v5
@@ -50,10 +50,10 @@ jobs:
           fi
 
       - name: Build with Gradle
-        run: ./gradlew build
+        run: bash ./gradlew build
 
       - name: Build Debug APK
-        run: ./gradlew assembleDebug
+        run: bash ./gradlew assembleDebug
 
       - name: Check Existing APK
         run: |
