@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -50,6 +52,8 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+    sourceSets["main"].java.srcDir("$buildDir/generated/source/themes")
 }
 
 dependencies {
@@ -72,4 +76,32 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.6.3")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+}
+
+val styleDictionaryTask by tasks.registering(Exec::class) {
+    group = "design tokens"
+    description = "Run Style Dictionary to generate design tokens"
+
+    // Set the working directory
+    workingDir = rootDir
+
+    val styleDictionaryBuildCommand = "style-dictionary build -c ${rootDir}/config.js --verbose"
+
+    println("Operating System: ${System.getProperty("os.name")}")
+    println("Executing command: $styleDictionaryBuildCommand")
+    // Configure the command based on the operating system
+    if (System.getProperty("os.name").lowercase().contains("windows")) {
+        commandLine("cmd", "/c", styleDictionaryBuildCommand)
+    } else {
+        commandLine(styleDictionaryBuildCommand)
+    }
+
+    // Capture and display output
+    standardOutput = System.out
+    errorOutput = System.err
+
+}
+
+tasks.withType<KotlinCompile> {
+    dependsOn(styleDictionaryTask)
 }
