@@ -85,15 +85,15 @@ val styleDictionaryTask by tasks.registering(Exec::class) {
     // Set the working directory
     workingDir = rootDir
 
-    val styleDictionaryBuildCommand = "style-dictionary build -c ${rootDir}/config.js --verbose"
+    val configFile = "${rootDir}/config.js"
 
     println("Operating System: ${System.getProperty("os.name")}")
-    println("Executing command: $styleDictionaryBuildCommand")
+    println("Executing command: $configFile")
     // Configure the command based on the operating system
     if (System.getProperty("os.name").lowercase().contains("windows")) {
-        commandLine("cmd", "/c", styleDictionaryBuildCommand)
+        commandLine("cmd", "/c", "style-dictionary", "build", "-c", configFile, "--verbose")
     } else {
-        commandLine(styleDictionaryBuildCommand)
+        commandLine("style-dictionary", "build", "-c", configFile, "--verbose")
     }
 
     // Capture and display output
