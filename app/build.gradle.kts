@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -76,32 +74,4 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.6.3")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
-}
-
-val styleDictionaryTask by tasks.registering(Exec::class) {
-    group = "design tokens"
-    description = "Run Style Dictionary to generate design tokens"
-
-    // Set the working directory
-    workingDir = rootDir
-
-    val configFile = "${rootDir}/config.js"
-
-    println("Operating System: ${System.getProperty("os.name")}")
-    println("Executing command: $configFile")
-    // Configure the command based on the operating system
-    if (System.getProperty("os.name").lowercase().contains("windows")) {
-        commandLine("cmd", "/c", "style-dictionary", "build", "-c", configFile, "--verbose")
-    } else {
-        commandLine("style-dictionary", "build", "-c", configFile, "--verbose")
-    }
-
-    // Capture and display output
-    standardOutput = System.out
-    errorOutput = System.err
-
-}
-
-tasks.withType<KotlinCompile> {
-    dependsOn(styleDictionaryTask)
 }
