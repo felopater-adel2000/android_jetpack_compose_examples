@@ -3,6 +3,7 @@ package com.restart.jetpack_compose_examples
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
+import android.bluetooth.BluetoothProfile
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -21,7 +22,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.lifecycleScope
 import com.restart.jetpack_compose_examples.ui.theme.Jetpack_compose_examplesTheme
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
+import java.util.UUID
+import kotlin.coroutines.resume
 
 class MainActivity : ComponentActivity() {
 
@@ -109,7 +115,11 @@ class MainActivity : ComponentActivity() {
                         ) { Text(text = "findDevices") }
 
                         Button(
-                            onClick = { getBoundedDevices() }
+                            onClick = {
+                                lifecycleScope.launch {
+                                    getBoundedDevices()
+                                }
+                            }
                         ) { Text(text = "getBoundedDevice") }
 
                     }
@@ -172,15 +182,143 @@ class MainActivity : ComponentActivity() {
         Log.d(TAG, "findDevices: $result")
     }
 
-    private fun getBoundedDevices() = bluetoothAdapter?.let {
+    private suspend fun getBoundedDevices() = bluetoothAdapter?.let {
         val boundedDevices = it.bondedDevices
         Log.d(TAG, "fetBoundedDevices: ${boundedDevices.size}")
-        boundedDevices.forEach {
-            Log.d(TAG, "fetBoundedDevices: ${it.name}")
-            Log.d(TAG, "fetBoundedDevices: ${it.address}")
-            Log.d(TAG, "fetBoundedDevices: ${it.bondState}")
+        boundedDevices.forEach { bluetoothDevice ->
+            Log.d(TAG, "fetBoundedDevices: ${bluetoothDevice.name}")
+            Log.d(TAG, "fetBoundedDevices: ${bluetoothDevice.address}")
+            Log.d(TAG, "fetBoundedDevices: ${bluetoothDevice.bondState}")
+
+            val profiles = getDeviceProfiles(bluetoothDevice)
+
+            profiles.forEach { pt ->
+                val isConeccted = isDeviceConnectedByProfile(bluetoothDevice, pt)
+
+                Log.d(TAG, "fetBoundedDevices: at Profile Type $pt isConeccted: $isConeccted")
+            }
+
+
+            Log.d(
+                TAG,
+                "============================================================================="
+            )
         }
     }
+
+    /** By Reflection **/
+    fun isDeviceConnectedByReflection(device: BluetoothDevice): Boolean {
+        val method = device.javaClass.getMethod("isConnected")
+        return method.invoke(device) as Boolean
+    }
+
+
+    fun getDeviceProfiles(device: BluetoothDevice): List<Int> {
+        val profiles = mutableListOf<Int>()
+        val uuids = device.uuids ?: return emptyList()
+
+        uuids.forEach { parcelUuid ->
+            Log.d(TAG, "UUID: ${parcelUuid.uuid}")
+
+            when (parcelUuid.uuid) {
+                // Audio Profiles
+                BluetoothUuids.A2DP_SINK -> profiles.add(BluetoothProfile.A2DP)
+                BluetoothUuids.A2DP_SOURCE -> profiles.add(BluetoothProfile.A2DP)
+                BluetoothUuids.ADV_AUDIO_DIST -> profiles.add(BluetoothProfile.A2DP)
+
+                // Headset Profiles
+                BluetoothUuids.HSP -> profiles.add(BluetoothProfile.HEADSET)
+                BluetoothUuids.HFP -> profiles.add(BluetoothProfile.HEADSET)
+                BluetoothUuids.HSP_AG -> profiles.add(BluetoothProfile.HEADSET)
+                BluetoothUuids.HFP_AG -> profiles.add(BluetoothProfile.HEADSET)
+
+                // HID Profile
+                BluetoothUuids.HID -> profiles.add(BluetoothProfile.HID_DEVICE)
+                BluetoothUuids.HOGP -> profiles.add(BluetoothProfile.HID_DEVICE)
+
+                // GATT (BLE)
+                else -> {
+                    // Most BLE devices will have custom UUIDs
+                    if (device.type == BluetoothDevice.DEVICE_TYPE_LE ||
+                        device.type == BluetoothDevice.DEVICE_TYPE_DUAL
+                    ) {
+                        profiles.add(BluetoothProfile.GATT)
+                    }
+                }
+            }
+        }
+
+        return profiles.distinct()
+    }
+
+
+    suspend fun isDeviceConnectedByProfile(
+        bluetoothDEvice: BluetoothDevice,
+        profileType: Int
+    ): Boolean =
+        suspendCancellableCoroutine { continuation ->
+
+            if (bluetoothAdapter == null) continuation.resumeWith(Result.success(false))
+
+            val profileProxyREsult = bluetoothAdapter!!.getProfileProxy(
+                this@MainActivity,
+                object : BluetoothProfile.ServiceListener {
+                    override fun onServiceConnected(
+                        profile: Int,
+                        proxy: BluetoothProfile?
+                    ) {
+                        Log.d(TAG, "onServiceConnected: ")
+                        val connectedDevices = proxy?.connectedDevices
+                        Log.d(
+                            TAG,
+                            "onServiceConnected: connectedDevices size ${connectedDevices?.size}"
+                        )
+                        connectedDevices?.forEach { device ->
+                            Log.d(
+                                TAG,
+                                "onServiceConnected: device.address:${device.address} :::: bluetoothDEvice.address:${bluetoothDEvice.address}"
+                            )
+                            if (bluetoothDEvice.address == device.address) {
+                                bluetoothAdapter?.closeProfileProxy(profile, proxy)
+                                return continuation.resume(true)
+
+                            }
+                        }
+                        bluetoothAdapter?.closeProfileProxy(profile, proxy)
+                        return continuation.resume(false)
+                    }
+
+                    override fun onServiceDisconnected(profile: Int) {
+                        Log.d(TAG, "onServiceDisconnected: Profile: $profile")
+                    }
+
+                },
+                profileType,
+            )
+            Log.d(TAG, "isDeviceConnectedByProfile: profileProxyREsult: $profileProxyREsult")
+        }
+}
+
+
+object BluetoothUuids {
+    // Audio Profiles
+    val A2DP_SINK = UUID.fromString("0000110B-0000-1000-8000-00805F9B34FB")
+    val A2DP_SOURCE = UUID.fromString("0000110A-0000-1000-8000-00805F9B34FB")
+    val ADV_AUDIO_DIST = UUID.fromString("0000110D-0000-1000-8000-00805F9B34FB")
+
+    // Headset Profiles
+    val HSP = UUID.fromString("00001108-0000-1000-8000-00805F9B34FB")
+    val HSP_AG = UUID.fromString("00001112-0000-1000-8000-00805F9B34FB")
+    val HFP = UUID.fromString("0000111E-0000-1000-8000-00805F9B34FB")
+    val HFP_AG = UUID.fromString("0000111F-0000-1000-8000-00805F9B34FB")
+
+    // HID Profile
+    val HID = UUID.fromString("00001124-0000-1000-8000-00805F9B34FB")
+    val HOGP = UUID.fromString("00001812-0000-1000-8000-00805F9B34FB")
+
+    // Other Common Profiles
+    val HEALTH_DEVICE = UUID.fromString("00001400-0000-1000-8000-00805F9B34FB")
+    val PANU = UUID.fromString("00001115-0000-1000-8000-00805F9B34FB") // PAN User
 }
 
 
