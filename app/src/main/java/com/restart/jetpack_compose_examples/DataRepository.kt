@@ -37,7 +37,7 @@ val settingsModule = module {
 }*/
 
 @Module
-@ComponentScan("com.restart.jetpack_compose_examples")
+@ComponentScan("com.restart")
 class AppModule {
     @Single
     fun provideDataRepository(): IDataRepository {
