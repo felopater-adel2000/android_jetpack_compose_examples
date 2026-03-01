@@ -3,6 +3,8 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.serialization")
     id("org.jetbrains.kotlin.plugin.compose")
+    // KSP
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -32,15 +34,13 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-    kotlinOptions {
-        jvmTarget = "17"
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
     buildFeatures {
         compose = true
         viewBinding = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.15"
@@ -74,4 +74,28 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.6.3")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+
+    // Koin BOM
+    implementation(platform("io.insert-koin:koin-bom:4.1.1"))
+
+    // Core
+    implementation("io.insert-koin:koin-core")
+
+    // Android
+    implementation("io.insert-koin:koin-android")
+
+    // Compose
+    implementation("io.insert-koin:koin-androidx-compose")
+    implementation("io.insert-koin:koin-compose")
+    implementation("io.insert-koin:koin-compose-viewmodel")
+
+    // Ktor
+    implementation("io.insert-koin:koin-ktor")
+
+    // Testing
+    testImplementation("io.insert-koin:koin-test")
+
+    // koin Annotation
+    implementation("io.insert-koin:koin-annotations:2.3.1")
+    ksp("io.insert-koin:koin-ksp-compiler:2.3.1")
 }
