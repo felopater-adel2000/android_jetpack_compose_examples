@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "554642404077",
+    "project_id": "reminder-c5371",
+    "storage_bucket": "reminder-c5371.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:554642404077:android:456c5e2f61897961e512e4",
+        "android_client_info": {
+          "package_name": "com.restart.jetpack_compose_examples"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6jkPUWlznyzc3HJB19a_LpstJ7KF4Xcs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
