@@ -3,7 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.serialization")
     id("org.jetbrains.kotlin.plugin.compose")
-    id("com.google.gms.google-services")
+    //id("com.google.gms.google-services")
 }
 
 android {
@@ -21,6 +21,18 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        buildConfigField(
+            "String",
+            "WONDERPUSH_CLIENT_ID",
+            "\"77cc636e415310a19a0d0095ed85563d5cd29e7a\""
+        )
+        buildConfigField(
+            "String",
+            "WONDERPUSH_CLIENT_SECRET",
+            "\"48227991ef3fa1443cb38990eb8b5145d281af2881a4b70d53d091a3d4aa24dc\""
+        )
+        buildConfigField("String", "WONDERPUSH_SENDER_ID", "\"554642404077\"")
     }
 
     buildTypes {
@@ -42,6 +54,7 @@ android {
     buildFeatures {
         compose = true
         viewBinding = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.15"
@@ -77,6 +90,17 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
     //Firebase
-    implementation(platform("com.google.firebase:firebase-bom:34.17.0"))
-    implementation("com.google.firebase:firebase-analytics")
+//    implementation(platform("com.google.firebase:firebase-bom:34.17.0"))
+//    implementation("com.google.firebase:firebase-analytics")
+
+    // Firebase Messaging
+    //implementation("com.google.firebase:firebase-messaging:24.1.0")
+
+    // Deprecated Firebase Messaging
+    implementation("com.google.firebase:firebase-iid:21.1.0")
+
+
+    // Wonder Push SDK
+//    implementation("com.wonderpush:wonderpush-android-sdk:4.6.0")
+//    implementation("com.wonderpush:wonderpush-android-sdk-fcm:1.0.7")
 }
