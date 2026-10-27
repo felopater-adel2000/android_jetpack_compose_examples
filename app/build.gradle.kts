@@ -81,4 +81,6 @@ dependencies {
 
     implementation("io.coil-kt.coil3:coil-compose:3.6.3")
     implementation("io.coil-kt.coil3:coil-network-okhttp:3.6.3")
+
+    implementation("com.felo:ui_sdk:1.0.0")
 }
